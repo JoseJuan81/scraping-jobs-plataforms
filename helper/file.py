@@ -1,5 +1,8 @@
-from pathlib import Path
 import pandas as pd
+
+from pathlib import Path
+
+from helper.constant import CandidateFields
 
 
 def save_file_path() -> Path:
@@ -14,7 +17,7 @@ def save_candidates(candidates: list) -> [dict]:
 
     dt = pd.DataFrame.from_dict(candidates, orient="columns")
 
-    _unusefull_data = dt["name"] != "Sin Nombre"
+    _unusefull_data = dt[CandidateFields.NAME] != "Sin Nombre"
     dt = dt.loc[_unusefull_data]
 
     print("Contactos filtrados:")

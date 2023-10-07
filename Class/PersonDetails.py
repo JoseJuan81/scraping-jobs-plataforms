@@ -1,7 +1,9 @@
 from selenium import webdriver
+
 from helper.selenium import get_elements
 from helper.css_selector import CANDIDATE_PROFILE_DATA_RIGHT, CANDIDATE_PROFILE_DATA_LEFT
 from helper.css_selector import CANDIDATE_EXPERIENCE
+from helper.constant import CandidateFields
 
 
 class PersonDetails:
@@ -14,7 +16,7 @@ class PersonDetails:
     def profile_page(self) -> None:
         """Función para ir a la página de perfil del candidato"""
 
-        url = self.person["profile_page"]
+        url = self.person[CandidateFields.PROFILE_PAGE]
         self.driver.get(url)
 
         self.get_left_side_data()
@@ -55,17 +57,8 @@ class PersonDetails:
     def expectation(self) -> str:
         """Función para extraer la expectativa económica del candidato"""
 
-        money_10 = self.contact_data_left[10].text
-        if "Mensual".lower() in money_10.lower():
-            return money_10
-
-        money_11 = self.contact_data_left[11].text
-        if "Mensual".lower() in money_11.lower():
-            return money_11
-
-        money_12 = self.contact_data_left[12].text
-        if "Mensual".lower() in money_12.lower():
-            return money_12
+        _expectation = self.contact_data_left[-1].text
+        return _expectation
 
     def personal_summary(self) -> str:
         """Función para extraer el resumen personal del candidato"""
