@@ -54,7 +54,7 @@ def go_to_jobposition_page(driver: webdriver) -> None:
             print("Mira bien lo que estas haciendo!!, sino deja de fastidiar")
             print("Vas a intentatrlo otra vez???")
 
-            response = input("s - sí\nn - no")
+            response = input("s - sí\nn - no\n")
             if response.lower().strip() == "n":
                 return False
 

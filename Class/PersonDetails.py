@@ -16,7 +16,7 @@ class PersonDetails:
     def profile_page(self) -> None:
         """Función para ir a la página de perfil del candidato"""
 
-        url = self.person[CandidateFields.PROFILE_PAGE]
+        url = self.person[CandidateFields.PROFILE_PAGE.value]
         self.driver.get(url)
 
         self.get_left_side_data()

@@ -38,6 +38,7 @@ class Scraper:
         self.ghl_contacts: list[dict] = []
         # external api debe ser una list[str] para incluir varias aplicaciones.
         self.external_api: str = ""
+        self.job_position: str = ""
 
     def init(self) -> None:
         """Inicio del webdriver para hacer scraper"""
@@ -78,6 +79,9 @@ class Scraper:
         print("...obteniendo los datos")
 
         loop_validator = True
+        self.job_position = input(
+            "Introduce el nombre del puesto de trabajo\n")
+
         exist_page_to_scrap = go_to_jobposition_page(self.driver)
 
         counter = 1
@@ -101,7 +105,8 @@ class Scraper:
             print("=="*50)
             print(f"Se encontraron {len(self.candidates)} candidatos")
 
-            self.candidates = save_candidates(self.candidates)
+            self.candidates = save_candidates(
+                self.candidates, self.job_position)
             print("información preliminar de los candidatos guardada!!")
             print("__"*50)
 
@@ -113,13 +118,13 @@ class Scraper:
             person = PersonData(candidate)
 
             data = dict([
-                (CandidateFields.NAME, person.name()),
-                (CandidateFields.IMAGE, person.image()),
-                (CandidateFields.PROFILE_PAGE, person.profile_page()),
-                (CandidateFields.APPLICATION_TIME, person.application_time()),
-                (CandidateFields.AGE, person.age()),
-                (CandidateFields.GRADE, person.grade()),
-                (CandidateFields.MATCH, person.match()),
+                (CandidateFields.NAME.value, person.name()),
+                (CandidateFields.IMAGE.value, person.image()),
+                (CandidateFields.PROFILE_PAGE.value, person.profile_page()),
+                (CandidateFields.APPLICATION_TIME.value, person.application_time()),
+                (CandidateFields.AGE.value, person.age()),
+                (CandidateFields.GRADE.value, person.grade()),
+                (CandidateFields.MATCH.value, person.match()),
             ])
 
             local_candidates.append(data)
@@ -133,20 +138,20 @@ class Scraper:
         local_candidates = []
         for candidate in self.candidates:
 
-            print(f'{counter} - Candidato: {candidate[CandidateFields.NAME]}')
+            print(
+                f'{counter} - Candidato: {candidate[CandidateFields.NAME.value]}')
 
             person = PersonDetails(candidate, self.driver)
             person.profile_page()
 
             data = dict([
-                (CandidateFields.EMAIL, person.email()),
-                (CandidateFields.DNI, person.dni()),
-                (CandidateFields.PHONE, person.phone()),
-                (CandidateFields.CITY, person.city()),
-                (CandidateFields.EXPECTATION, person.expectation()),
-                (CandidateFields.PERSONAL_SUMMARY, person.personal_summary()),
-                (CandidateFields.WORK_EXPERIENCE, person.work_experience()),
-                # (CandidateFields.GENDER, person.gender()),
+                (CandidateFields.EMAIL.value, person.email()),
+                (CandidateFields.DNI.value, person.dni()),
+                (CandidateFields.PHONE.value, person.phone()),
+                (CandidateFields.CITY.value, person.city()),
+                (CandidateFields.EXPECTATION.value, person.expectation()),
+                (CandidateFields.PERSONAL_SUMMARY.value, person.personal_summary()),
+                (CandidateFields.WORK_EXPERIENCE.value, person.work_experience()),
             ])
 
             candidate_full_data = {**candidate, **data}
@@ -157,7 +162,7 @@ class Scraper:
             counter += 1
 
         self.candidates = local_candidates
-        save_candidates(self.candidates)
+        save_candidates(self.candidates, self.job_position)
 
     def send_data_to_external_api(self, candidate_data) -> None:
         """Función que determina si la información del candidato debe envivarse a una Api externa"""
