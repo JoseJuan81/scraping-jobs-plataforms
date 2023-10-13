@@ -20,15 +20,16 @@ class GHLContactModel(BaseModel):
 def build_ghl_data(candidate: dict = {}) -> dict:
     """Función para transformar la data a la estructura de GHL"""
 
-    first_name, last_name = destructure_name(candidate[CandidateFields.NAME])
+    first_name, last_name = destructure_name(
+        candidate[CandidateFields.NAME.value])
     custom_fields = build_custom_fields(candidate)
 
     _data = dict([
-        ("email", candidate[CandidateFields.EMAIL]),
+        ("email", candidate[CandidateFields.EMAIL.value]),
         ("firstName", first_name),
         ("lastName", last_name),
-        ("phone", candidate[CandidateFields.PHONE]),
-        ("address1", candidate[CandidateFields.CITY]),
+        ("phone", candidate[CandidateFields.PHONE.value]),
+        ("address1", candidate[CandidateFields.CITY.value]),
         ("customFields", custom_fields),
         ("tags", ["Digital Disruptor", "scrapping computrabajo", "JJ81"])
     ])
@@ -41,13 +42,13 @@ def build_custom_fields(candidate: dict) -> dict:
     """Función para construir campos personalizado para GHL"""
 
     data = dict([
-        ("contact.dni", candidate[CandidateFields.DNI]),
+        ("contact.dni", candidate[CandidateFields.DNI.value]),
         ("contact.expectativa_salarial",
-         candidate[CandidateFields.EXPECTATION]),
+         candidate[CandidateFields.EXPECTATION.value]),
         ("contact.resumen_personal",
-         candidate[CandidateFields.PERSONAL_SUMMARY]),
+         candidate[CandidateFields.PERSONAL_SUMMARY.value]),
         ("contact.experiencia_laboral",
-         candidate[CandidateFields.WORK_EXPERIENCE]),
+         candidate[CandidateFields.WORK_EXPERIENCE.value]),
     ])
 
     return data

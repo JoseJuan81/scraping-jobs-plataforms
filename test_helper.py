@@ -1,4 +1,5 @@
 from helper.utils import destructure_name, extract_expectation_amount
+from helper.constant import CandidateFields
 
 
 def test_destructure_name():
@@ -23,3 +24,9 @@ def test_expectation_amount():
     expected = "0.00"
 
     assert amount == expected
+
+
+def test_enum():
+    expected = "name"
+
+    assert CandidateFields.NAME == expected

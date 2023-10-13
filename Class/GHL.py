@@ -32,6 +32,6 @@ class GoHighLevel:
         except Exception as error:
             print("&&"*50)
             print(
-                f"Error al enviar contacto a GHL ({self.candidate[CandidateFields.NAME]})")
+                f"Error al enviar contacto a GHL ({self.candidate[CandidateFields.NAME.value]})")
             print(error)
             print("&&"*50)
