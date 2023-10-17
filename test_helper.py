@@ -29,4 +29,4 @@ def test_expectation_amount():
 def test_enum():
     expected = "name"
 
-    assert CandidateFields.NAME == expected
+    assert CandidateFields.NAME.value == expected

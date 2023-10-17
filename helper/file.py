@@ -10,10 +10,10 @@ def save_file_path(file_name: str) -> Path:
 
     main_dir = Path().absolute()
     _file_name = f"{file_name}.csv"
-    return Path(main_dir, "Scraping_computrabajo", "result", _file_name)
+    return Path(main_dir, "result", _file_name)
 
 
-def save_candidates(candidates: list, file_name: str) -> [dict]:
+def save_candidates(candidates: list, file_name: str) -> list[dict]:
     """Función para guardar lista de candidatos scrapeados"""
 
     dt = pd.DataFrame.from_dict(candidates, orient="columns")

@@ -65,14 +65,12 @@ class PersonDetails:
 
         return self.contact_data_right[0].text
 
-    def work_experience(self) -> [str]:
+    def work_experience(self) -> str:
         """Función para extraer la experiencia del candidato"""
 
         w_experience_div = self.contact_data_right[2]
         lis = get_elements(CANDIDATE_EXPERIENCE, w_experience_div)
 
-        w_experiences = []
-        for el in lis:
-            w_experiences.append(el.text)
+        w_experiences = "\n".join(el.text for el in lis)
 
         return w_experiences

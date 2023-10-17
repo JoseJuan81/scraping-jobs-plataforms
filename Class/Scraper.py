@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 from dotenv import load_dotenv
 
 from helper.file import save_candidates
-from helper.selenium import get_elements, get_candidates_webelements, go_to_page
+from helper.selenium import get_elements, get_candidates_webelements
 from helper.selenium import go_to_jobposition_page, get_next_pagination_button
 from helper.constant import CandidateFields
 from helper.ghl import GHL_APP
@@ -169,6 +169,8 @@ class Scraper:
 
         if self.external_api == GHL_APP:
             ghl = GoHighLevel(candidate=candidate_data)
+            ghl.set_recruitment_platform("computrabajo")
+            ghl.set_tags([self.job_position])
             ghl.send()
 
     def use_external_api(self, send: str = "") -> None:

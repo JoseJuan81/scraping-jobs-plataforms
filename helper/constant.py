@@ -17,3 +17,4 @@ class CandidateFields(Enum):
     PHONE = "phone"
     PROFILE_PAGE = "profile_page"
     WORK_EXPERIENCE = "work_experience"
+    TAGS = "tags"
