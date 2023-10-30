@@ -23,8 +23,8 @@ from pathlib import Path
 
 load_dotenv()
 
-USER_EMAIL = os.getenv("USER_EMAIL")
-USER_PASS = os.getenv("USER_PASS")
+USER_EMAIL = os.getenv("COMPUTRABAJO_USER_EMAIL")
+USER_PASS = os.getenv("COMPUTRABAJO_USER_PASSWORD")
 COMPUTRABAJO_URL_LOGIN = os.getenv("COMPUTRABAJO_URL_LOGIN")
 
 
