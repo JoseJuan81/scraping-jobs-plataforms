@@ -6,10 +6,12 @@ import requests
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote import webelement
+
 from dotenv import load_dotenv
 
 from helper.file import save_candidates
-from helper.selenium import get_elements, get_candidates_webelements
+from helper.selenium import get_element, get_candidates_webelements
 from helper.selenium import go_to_jobposition_page, get_next_pagination_button
 from helper.constant import CandidateFields
 from helper.ghl import GHL_APP
@@ -44,22 +46,29 @@ class Scraper:
         """Inicio del webdriver para hacer scraper"""
 
         options = webdriver.ChromeOptions()
+        options.add_argument("--start-maximized")
+
         self.driver = webdriver.Chrome(options=options)
+        self.driver.implicitly_wait(15)
 
-        self.login()
-
-    def login(self) -> None:
+    def login(self,
+              url_page:str = "",
+              user:str = "",
+              password:str = "",
+              email_css_selector:str = "",
+              password_css_selector:str = "",
+              btn_css_selector:str = "") -> None:
         """Inicio de sesión"""
 
-        self.driver.get(COMPUTRABAJO_URL_LOGIN)
+        self.driver.get(url_page)
 
-        input_email, *_ = get_elements("#Email", self.driver)
-        input_pass, *_ = get_elements("#Password", self.driver)
+        input_email = get_element(email_css_selector, self.driver)
+        input_pass = get_element(password_css_selector, self.driver)
 
-        input_email.send_keys(USER_EMAIL)
-        input_pass.send_keys(USER_PASS)
+        input_email.send_keys(user)
+        input_pass.send_keys(password)
 
-        btn, *_ = get_elements("#bbR", self.driver)
+        btn = get_element(btn_css_selector, self.driver)
         btn.click()
 
     def next_page(self) -> bool:
@@ -177,6 +186,28 @@ class Scraper:
         """Función que registra las aplicaciones externas para envío de datos"""
 
         self.external_api = send
+
+    def get_elements(self, css:str = "", web_element:webelement = {}) -> list[webelement]:
+        """Funcion para obtener listado de webelements"""
+
+        driver = web_element if web_element else self.driver
+        try:
+            ele = driver.find_elements(By.CSS_SELECTOR, css)
+        except:
+            ele = []
+
+        return ele
+    
+    def get_element(self, css:str = "", web_element:webelement = {}) -> webelement:
+        """Funcion para obtener listado de webelements"""
+
+        driver = web_element if web_element else self.driver
+        try:
+            ele = driver.find_element(By.CSS_SELECTOR, css)
+        except:
+            ele = None
+
+        return ele
 
     def end(self) -> None:
         print("%%"*50)
