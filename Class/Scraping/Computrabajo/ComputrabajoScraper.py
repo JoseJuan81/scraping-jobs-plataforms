@@ -7,25 +7,20 @@ from selenium.webdriver.remote import webelement
 from Class.Scraper import Scraper
 from Class.Scraping.Computrabajo.ComputrabajoCssSelectors import ComputrabajoCssSelectors
 from Class.ExternalApi import ExternalApi
+from Class.SavingData import SavingData
 
-from helper.file import save_candidates
 from helper.constant import CandidateFields
-
-USER_EMAIL = os.getenv("COMPUTRABAJO_USER_EMAIL")
-USER_PASS = os.getenv("COMPUTRABAJO_USER_PASSWORD")
-LOGIN_PAGE = os.getenv("COMPUTRABAJO_URL_LOGIN")
-JOB_PAGE = os.getenv("COMPUTRABAJO_JOB_PAGE")
 
 class ComputrabajoScraper:
     def __init__(self) -> None:
         self.scraper:Scraper = Scraper()
         self.css_selectors:ComputrabajoCssSelectors = ComputrabajoCssSelectors()
         self.API = ExternalApi()
+        self.FILE = SavingData()
         self.pagination:int = 1
         self.candidates:list = list()
-        self.candidates_webelements:list[webelement] = list()
-        self.job_position:str = "asistente_marketing"
-        self.job_plataform:str = "Bumeran"
+        self.candidates_links:list[webelement] = list()
+        self.job_plataform:str = "Computrabajo"
 
     def start_browser(self) -> None:
         """Iniciar el navegador"""
@@ -33,67 +28,68 @@ class ComputrabajoScraper:
         print("Iniciando navegador...")
         self.scraper.init()
 
-    def login(self) -> None:
+    def login(self, login_url:str = "", user_email:str = "", user_pass:str = "") -> None:
         """Funcion para iniciar sesion en bumeran"""
 
         print("Ingresando a la cuenta...")
         self.scraper.login(
-            url_page=LOGIN_PAGE,
-            user=USER_EMAIL,
-            password=USER_PASS,
+            url_page=login_url,
+            user=user_email,
+            password=user_pass,
             email_css_selector=self.css_selectors.EMAIL_INPUT,
             password_css_selector=self.css_selectors.PASSWORD_INPUT,
             btn_css_selector=self.css_selectors.BTN_INGRESAR,
         )
 
-    def job_post(self) -> None:
+    def job_post(self, job_url) -> None:
         """Funcion para ir a la pagina del aviso publicado"""
 
-        self.scraper.driver.get(JOB_PAGE)
-        input("\nCerrar modales de anuncios para continuar\n")
+        self.scraper.driver.get(job_url)
 
     def start_scraping(self) -> None:
         """Funcion para hacer scraping de los candidatos que postularon"""
 
-        print("Extrayendo candidatos...")
-        self.get_candidates()
-        
-        print("Iterando los candidatos...")
-        candidates_generator = self.loop_candidates()
-        
-        print("Extrayendo informacion de cada candidato...")
-        candidate_generator = self.extract_candidate_data(candidates_generator)
+        self.get_candidates_links()
+        candidate_generator = self.loop_candidates()        
+        candidate_data_generator = self.extract_candidate_data(candidate_generator)
 
-        for candidate in candidate_generator:
+        for candidate in candidate_data_generator:
             print(f'Datos de {candidate["name"]} guardados en variable self.candidates')
            
             self.candidates.append(candidate)
 
-    def get_candidates(self) -> None:
-        """Funcion para obtener listado de postulantes de la pagina"""
+    def get_candidates_links(self) -> None:
+        """Funcion para obtener listado de postulantes de la pagina en formato de webelements"""
 
-        self.candidates_webelements = self.scraper.get_elements(css=self.css_selectors.CANDIDATES)
+        print("Extrayendo candidatos de lista principal...")
+        candidates_webelement = self.scraper.get_elements(css=self.css_selectors.CANDIDATES)
+        candidates_href = [c.get_attribute('href') for c in candidates_webelement]
+        self.candidates_links += candidates_href
+
+        next_page = self.next_page()
+        if next_page:
+            self.get_candidates_links()
 
     def loop_candidates(self) -> Generator[any, any, any]:
         """Funcion que recorre uno a uno postulantes"""
 
-        for candidate in self.candidates_webelements:
+        print("Iterando los candidatos...")
+        for candidate in self.candidates_links:
             yield candidate
 
-        _, file_path = save_candidates(self.candidates, self.job_position)
-        self.API.set_path_file(file_path=file_path)
-        self.next_page()
-
-    def extract_candidate_data(self, candidates_generator) -> Generator[dict, any, any]:
+    def extract_candidate_data(self, candidate_generator) -> Generator[dict, any, any]:
         """Funcion que retorna la informacion del postulante"""
 
-        for candidate in candidates_generator:
+        print("Extrayendo informacion de cada candidato...")
+        for candidate_url in candidate_generator:
             print("Iniciando extraccion de datos por postulante")
 
-            candidate.click()
+            self.scraper.driver.get(candidate_url)
             # time.sleep(2)
 
-            name = self.get_prop(css_selector=self.css_selectors.NAME, err="Sin Nombre")
+            _name = self.get_prop(css_selector=self.css_selectors.NAME, err="Sin Nombre")
+            name = _name[14:]
+
             phone = self.get_prop(self.css_selectors.PHONE, err="Sin telefono")
             email = self.get_prop(self.css_selectors.EMAIL, err="Sin correo")
             dni = self.get_prop(self.css_selectors.DNI, err="Sin DNI")
@@ -136,13 +132,21 @@ class ComputrabajoScraper:
         except:
             return err
 
-    def next_page(self) -> None:
+    def next_page(self) -> bool:
         """Funcion para presionar botones de paginacion"""
 
-        current_page = self.scraper.get_element(self.css_selectors.ACTIVE_PAGE).text
-        total_pages_list = self.scraper.get_elements(self.css_selectors.PAGINATION_TOTAL_PAGE)
-        total_pages = total_pages_list[-3].text
+        n_page_pagintation = self.scraper.get_element(self.css_selectors.NEXT_PAGE)
 
-        if current_page != total_pages:
-            next_page = total_pages_list[-2]
-            next_page.click()
+        if n_page_pagintation:
+            n_page_pagintation.click()
+            return True
+        
+        return False
+
+    def save_css_file(self, job_position_name:str="")-> None:
+        """Funcion para guardar data en archivo csv"""
+
+        self.FILE.save_candidates(
+            candidates=self.candidates,
+            file_name=f'{self.job_plataform}_{job_position_name}'
+        )

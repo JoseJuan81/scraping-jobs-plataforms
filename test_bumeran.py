@@ -3,7 +3,7 @@ import time
 
 import inspect
 
-from helper.file import save_candidates
+from Class.SavingData import save_candidates
 from helper.constant import CandidateFields
 
 from Class.Scraping.Bumeran.BumeranScraper import BumeranScraper

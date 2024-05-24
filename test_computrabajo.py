@@ -1,52 +1,62 @@
 import pytest
 import time
 
-import inspect
-
-from helper.file import save_candidates
 from helper.constant import CandidateFields
 
 from Class.Scraping.Computrabajo.ComputrabajoScraper import ComputrabajoScraper
+
+LOGIN = "https://empresa.pe.computrabajo.com/Company"
+JOB_PAGE = "https://empresa.pe.computrabajo.com/Company/Offers/Match?oi=917DEA8E551913ED61373E686DCF3405&cf=469814F59E4D6F04"
+USER_EMAIL = "info@japisale.com"
+USER_PASS = "MilongoIV8"
+
 
 @pytest.fixture(scope="module")
 def login():
     com = ComputrabajoScraper()
     com.start_browser()
-    com.login()
+    com.login(
+        login_url=LOGIN,
+        user_email=USER_EMAIL,
+        user_pass=USER_PASS
+    )
     yield com
 
 def test_home_page(login):
     l = login
     time.sleep(5)
 
-    assert l.scraper.driver.current_url == "https://empresa.pe.computrabajo.com/Company"
+    assert l.scraper.driver.current_url == LOGIN
 
 @pytest.fixture(scope="module")
 def job_page(login):
-    time.sleep(5)
-    login.job_post()
-
+    time.sleep(3)
+    login.job_post(JOB_PAGE)
     yield login
 
-def test_candidates(job_page):
-    bum = job_page
-    bum.get_candidates()
+def test_job_post_url(job_page):
+    
+    assert job_page.scraper.driver.current_url == JOB_PAGE
 
-    assert len(bum.candidates_webelements) == 25
+@pytest.fixture(scope="module")
+def candidates_links(job_page):
+    com = job_page
+    com.get_candidates_links()
+    yield com
 
-def test_loop_candidates(job_page):
-    bum = job_page
-    bum.get_candidates()
-    candidate_generator = bum.loop_candidates()
+def test_candidates(candidates_links):
+    com = candidates_links
 
-    assert inspect.isgenerator(candidate_generator)
+    assert len(com.candidates_links) == 75
 
-def test_extract_candidate_data(job_page):
-    bum = job_page
-    bum.get_candidates()
-    candidate_generator = bum.loop_candidates()
-    generator = bum.extract_candidate_data(candidate_generator)
-    candidate = next(generator)
+def test_candidate_data(candidates_links):
+    com = candidates_links
+    candidate_generator = com.loop_candidates()
+    candidate_data_generator = com.extract_candidate_data(candidate_generator)
+
+    for candidate_data in candidate_data_generator:
+        candidate = candidate_data
+        break
 
     name = CandidateFields.NAME.value
     phone = CandidateFields.PHONE.value
@@ -94,73 +104,17 @@ def test_extract_candidate_data(job_page):
     assert len(candidate[skills]) >= 1
     assert candidate[skills][0].lower() != "Sin habilidades".lower()
 
-def test_save_data():
-    candidate = dict([
-        (CandidateFields.NAME.value, "JJ"),
-        (CandidateFields.PHONE.value, "970127070"),
-        (CandidateFields.EMAIL.value, "email@mail.com"),
-        (CandidateFields.DNI.value, "0391684"),
-        (CandidateFields.ADDRESS.value, "Calle Robinson 213"),
-        (CandidateFields.AGE.value, "42"),
-        (CandidateFields.WORK_EXPERIENCE.value, "de todo un poco"),
-        (CandidateFields.STUDY.value, "Ingenieria MEcanica"),
-        (CandidateFields.SKILL.value, "por demas..."),
-    ])
-    candidates = [candidate]
-    save_candidates(candidates, "bumeran_pytest_test")
+@pytest.fixture(scope="module")
+def scraping(job_page):
+    com = job_page
+    com.start_scraping()
 
-    candidates = [candidate, candidate, candidate]
-    save_candidates(candidates, "bumeran_pytest_test")
+    yield com
 
-def test_pagination(job_page):
-    bum = job_page
-    bum.next_page()
-    time.sleep(3)
+def test_start_scraping(scraping):
+    com = scraping
+    assert len(com.candidates) == 75
 
-    expected = bum.scraper.get_element(bum.css_selectors.ACTIVE_PAGE).text
-    assert int(expected) == 2
-
-    bum.next_page()
-    time.sleep(3)
-    bum.next_page()
-    time.sleep(3)
-
-    expected = bum.scraper.get_element(bum.css_selectors.ACTIVE_PAGE).text
-    assert int(expected) == 4
-
-    bum.next_page()
-    time.sleep(3)
-    bum.next_page()
-    time.sleep(3)
-    bum.next_page()
-    time.sleep(3)
-    bum.next_page()
-    time.sleep(3)
-    bum.next_page()
-    time.sleep(3)
-    bum.next_page()
-    time.sleep(3)
-    bum.next_page()
-    time.sleep(3)
-    bum.next_page()
-    time.sleep(3)
-    bum.next_page()
-    time.sleep(3)
-    bum.next_page()
-    time.sleep(3)
-
-    expected = bum.scraper.get_element(bum.css_selectors.ACTIVE_PAGE).text
-    assert int(expected) == 11
-
-    bum.next_page()
-    time.sleep(3)
-
-    expected = bum.scraper.get_element(bum.css_selectors.ACTIVE_PAGE).text
-    assert int(expected) == 11
-
-def test_start_scraping(job_page):
-    bum = job_page
-    bum.start_scraping()
-
-    assert len(bum.candidates) == 25
-    assert type(bum.candidates[0]) == dict
+def test_saved_data(scraping):
+    com = scraping
+    com.save_css_file(job_position_name="testing_file")

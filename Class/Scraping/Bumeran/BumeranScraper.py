@@ -1,5 +1,3 @@
-import os
-
 from typing import Generator
 
 from selenium.webdriver.remote import webelement
@@ -7,20 +5,16 @@ from selenium.webdriver.remote import webelement
 from Class.Scraper import Scraper
 from Class.Scraping.Bumeran.BumeranCssSelectors import BumeranCssSelectors
 from Class.ExternalApi import ExternalApi
+from Class.SavingData import SavingData
 
-from helper.file import save_candidates
 from helper.constant import CandidateFields
-
-USER_EMAIL = os.getenv("BUMERAN_USER_EMAIL")
-USER_PASS = os.getenv("BUMERAN_USER_PASSWORD")
-LOGIN_PAGE = os.getenv("BUMERAN_URL_LOGIN")
-JOB_PAGE = os.getenv("BUMERAN_JOB_PAGE")
 
 class BumeranScraper:
     def __init__(self) -> None:
         self.scraper:Scraper = Scraper()
         self.css_selectors:BumeranCssSelectors = BumeranCssSelectors()
         self.API = ExternalApi()
+        self.FILE = SavingData()
         self.pagination:int = 1
         self.candidates:list = list()
         self.candidates_webelements:list[webelement] = list()
@@ -33,23 +27,23 @@ class BumeranScraper:
         print("Iniciando navegador...")
         self.scraper.init()
 
-    def login(self) -> None:
+    def login(self, login_url:str = "", user_email:str = "", user_pass:str = "") -> None:
         """Funcion para iniciar sesion en bumeran"""
 
         print("Ingresando a la cuenta...")
         self.scraper.login(
-            url_page=LOGIN_PAGE,
-            user=USER_EMAIL,
-            password=USER_PASS,
+            url_page=login_url,
+            user=user_email,
+            password=user_pass,
             email_css_selector=self.css_selectors.EMAIL_INPUT,
             password_css_selector=self.css_selectors.PASSWORD_INPUT,
             btn_css_selector=self.css_selectors.BTN_INGRESAR,
         )
 
-    def job_post(self) -> None:
+    def job_post(self, job_url) -> None:
         """Funcion para ir a la pagina del aviso publicado"""
 
-        self.scraper.driver.get(JOB_PAGE)
+        self.scraper.driver.get(job_url)
         input("\nCerrar modales de anuncios para continuar\n")
 
     def start_scraping(self) -> None:
@@ -80,7 +74,7 @@ class BumeranScraper:
         for candidate in self.candidates_webelements:
             yield candidate
 
-        _, file_path = save_candidates(self.candidates, self.job_position)
+        _, file_path = self.FILE.save_candidates(self.candidates, self.job_position)
         self.API.set_path_file(file_path=file_path)
         self.next_page()
 
