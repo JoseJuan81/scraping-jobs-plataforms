@@ -31,7 +31,8 @@ class CommandLine:
     def get_config_file_path(self, config_file:str = "") -> Path:
         """Funcion para obtener la ruta completa del archivo de configuracion"""
 
-        return Path("Class", "config", config_file)
+        current_folder = Path.cwd()
+        return Path(current_folder, Path("config", config_file))
 
     def get_terminal_input(self) -> tuple:
         """Funcion para obtener los datos que el usuario introdujo desde la terminal"""

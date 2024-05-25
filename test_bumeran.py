@@ -3,16 +3,25 @@ import time
 
 import inspect
 
-from Class.SavingData import save_candidates
+from Class.SavingData import SavingData
 from helper.constant import CandidateFields
 
 from Class.Scraping.Bumeran.BumeranScraper import BumeranScraper
+
+LOGIN = "https://www.bumeran.com.pe/empresas/ingreso"
+JOB_PAGE = "https://www.bumeran.com.pe/empresas/postulaciones?idAviso=1116307021"
+USER_EMAIL = "vinimerizalde@gmail.com"
+USER_PASS = "M1l1tant3d3lam0r"
 
 @pytest.fixture(scope="module")
 def login():
     bum = BumeranScraper()
     bum.start_browser()
-    bum.login()
+    bum.login(
+        login_url=LOGIN,
+        user_email=USER_EMAIL,
+        user_pass=USER_PASS
+    )
     yield bum
 
 def test_home_page(login):
@@ -24,7 +33,7 @@ def test_home_page(login):
 @pytest.fixture(scope="module")
 def job_page(login):
     time.sleep(5)
-    login.job_post()
+    login.job_post(JOB_PAGE)
 
     yield login
 
@@ -107,53 +116,53 @@ def test_save_data():
         (CandidateFields.SKILL.value, "por demas..."),
     ])
     candidates = [candidate]
-    save_candidates(candidates, "bumeran_pytest_test")
+    SavingData().save_candidates(candidates, "bumeran_pytest_test")
 
     candidates = [candidate, candidate, candidate]
-    save_candidates(candidates, "bumeran_pytest_test")
+    SavingData().save_candidates(candidates, "bumeran_pytest_test")
 
 def test_pagination(job_page):
     bum = job_page
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
 
     expected = bum.scraper.get_element(bum.css_selectors.ACTIVE_PAGE).text
     assert int(expected) == 2
 
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
 
     expected = bum.scraper.get_element(bum.css_selectors.ACTIVE_PAGE).text
     assert int(expected) == 4
 
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
 
     expected = bum.scraper.get_element(bum.css_selectors.ACTIVE_PAGE).text
     assert int(expected) == 11
 
     bum.next_page()
-    time.sleep(3)
+    time.sleep(5)
 
     expected = bum.scraper.get_element(bum.css_selectors.ACTIVE_PAGE).text
     assert int(expected) == 11
