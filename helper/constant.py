@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class CandidateFields(Enum):
+    ADDRESS = "address"
     AGE = "age"
     APPLICATION_TIME = "application_time"
     CITY = "city"
@@ -15,6 +16,9 @@ class CandidateFields(Enum):
     NAME = "name"
     PERSONAL_SUMMARY = "personal_summary"
     PHONE = "phone"
+    PLATAFORM = "plataform"
     PROFILE_PAGE = "profile_page"
+    SKILL = "skill"
+    STUDY = "study"
     WORK_EXPERIENCE = "work_experience"
     TAGS = "tags"

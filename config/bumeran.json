@@ -1,0 +1,10 @@
+{
+    "company_credentials": {
+        "userEmail": "vinimerizalde@gmail.com",
+        "userPass": "M1l1tant3d3lam0r"
+    },
+    "loginUrl": "https://www.bumeran.com.pe/empresas/ingreso",
+    "processes": {
+        "asistente de marketing": "https://www.bumeran.com.pe/empresas/postulaciones?idAviso=1116307021"
+    }
+}
