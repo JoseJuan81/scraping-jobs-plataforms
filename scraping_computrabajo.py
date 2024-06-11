@@ -4,6 +4,9 @@ from Class.Scraping.Computrabajo.ComputrabajoScraper import ComputrabajoScraper
 from Class.Terminal.CommandLine import CommandLine
 
 terminal_input = CommandLine()
+print("terminal_input")
+print(terminal_input)
+print("terminal_input")
 
 if __name__ == "__main__":
     comp = ComputrabajoScraper()

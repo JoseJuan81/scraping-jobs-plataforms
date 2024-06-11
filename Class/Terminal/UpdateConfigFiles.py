@@ -1,23 +1,24 @@
 import json
 import argparse
+import sys
 
 from pathlib import Path
 
 class UpdateConfigFiles:
     def __init__(self):
         
-        json_file, process_name, job_page = self.get_terminal_input()
+        json_file, process_name, job_page, company_name = self.get_terminal_input()
         file_path = self.get_config_file_path(config_file=json_file)
-        self.update_config_file(json_file=file_path, process_name=process_name, job_page=job_page)
+        self.update_config_file(json_file=file_path, process_name=process_name, job_page=job_page, company_name=company_name)
 
-    def update_config_file(self, json_file:Path = Path(), process_name:str="", job_page:str="") -> None:
+    def update_config_file(self, json_file:Path = Path(), process_name:str="", job_page:str="", company_name:str="") -> None:
         """Funcion que actualiza el archivo json con los datos pasados como argumento"""
 
         try:
             with open(json_file, 'r') as file:
                 data = json.load(file)
             
-            data["processes"][process_name] = job_page
+            data[company_name]["processes"][process_name] = job_page
             
             with open(json_file, 'w') as file:
                 json.dump(data, file, indent=4)
@@ -40,9 +41,27 @@ class UpdateConfigFiles:
         """Funcion para obtener los datos que el usuario introdujo desde la terminal"""
 
         parser = argparse.ArgumentParser()
-        parser.add_argument("--json_file", help="Nombre del archivo json a actualizar")
+        parser.add_argument("--company_name", help="Nombre del archivo json a actualizar")
+        parser.add_argument("--config_file", help="Nombre del archivo json a actualizar")
         parser.add_argument("--process_name", help="Nombre del puesto de trabajo")
         parser.add_argument("--job_page", help="Url de la pagina del puesto de trabajo")
         args = parser.parse_args()
 
-        return (args.json_file, args.process_name, args.job_page)
+        company_name = args.company_name
+        config_file = args.config_file
+        process_name = args.process_name
+        job_page = args.job_page
+
+        if not company_name:
+            sys.exit("Es necesario el nombre de la compania para ejecutar el scraping")
+
+        if not config_file:
+            sys.exit("Es necesario definir el archivo de configuracion para ejecutar el scraping")
+
+        if not process_name:
+            sys.exit("Es necesario definir el puesto de trabajo para ejecutar el scraping")
+
+        if not job_page:
+            sys.exit("Es necesario definir la url del puesto de trabajo para ejecutar el scraping")
+
+        return (config_file, process_name, job_page, company_name)
