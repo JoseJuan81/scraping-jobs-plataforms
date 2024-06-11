@@ -150,3 +150,10 @@ class ComputrabajoScraper:
             candidates=self.candidates,
             file_name=f'{self.job_plataform}_{job_position_name}'
         )
+
+    def end(self, job_position_name:str="") -> None:
+        """
+        Funcion para terminar el scraping
+        """
+
+        print(f"{self.job_plataform}: Scraping Finalizado para '{job_position_name}'")

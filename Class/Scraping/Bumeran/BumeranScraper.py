@@ -140,3 +140,10 @@ class BumeranScraper:
         if current_page != total_pages:
             next_page = total_pages_list[-2]
             next_page.click()
+
+    def end(self, job_position_name:str="") -> None:
+        """
+        Funcion para terminar el scraping
+        """
+
+        print(f"{self.job_plataform}: Scraping Finalizado para '{job_position_name}'")

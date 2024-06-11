@@ -19,5 +19,4 @@ if __name__ == "__main__":
     comp.job_post(terminal_input.job_url)
     comp.start_scraping()
     comp.save_css_file(job_position_name=terminal_input.process_name)
-    # comp.API.send(url="")
-    comp.scraper.end()
+    comp.end(job_position_name=terminal_input.process_name)
