@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 
-from helper.css_selector import SELECTOR_CANDIDATES, NEXT_PAGE
+from Class.css_selector import SELECTOR_CANDIDATES, NEXT_PAGE
 
 
 def get_element(path: str, driver: webdriver) -> WebElement:
@@ -16,7 +16,7 @@ def get_element(path: str, driver: webdriver) -> WebElement:
     return ele
 
 
-def get_elements(path: str, driver: webdriver) -> [WebElement]:
+def get_elements(path: str, driver: webdriver) -> list[WebElement]:
     """Función para obtener elementos por css Selector"""
 
     try:

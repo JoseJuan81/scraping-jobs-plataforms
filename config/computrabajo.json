@@ -1,0 +1,26 @@
+{
+    "japisale": {
+        "company_credentials": {
+            "userEmail": "info@japisale.com",
+            "userPass": "MilongoIV8"
+        },
+        "loginUrl": "https://empresa.pe.computrabajo.com/Company",
+        "processes": {
+            "disenador grafico": "https://empresa.pe.computrabajo.com/Company/Offers/Match?oi=F9669F7CB1D08CA961373E686DCF3405&cf=469814F59E4D6F04",
+            "disenador UX con experiencia": "https://empresa.pe.computrabajo.com/Company/Offers/Match?oi=A0B36EF57E88CB7161373E686DCF3405&cf=469814F59E4D6F04",
+            "practicante de asistente administrativo": "https://empresa.pe.computrabajo.com/Company/Offers/Match?oi=E8567E8DADFF11A361373E686DCF3405&cf=469814F59E4D6F04",
+            "desarrollador backend o frontend": "https://empresa.pe.computrabajo.com/Company/Offers/Match?oi=03D013983CED26CA61373E686DCF3405&cf=469814F59E4D6F04",
+            "asistente contabilidad full time": "https://empresa.pe.computrabajo.com/Company/Offers/Match?oi=917DEA8E551913ED61373E686DCF3405&cf=469814F59E4D6F04"
+        }
+    },
+    "casamarket": {
+        "company_credentials": {
+            "userEmail": "",
+            "userPass": ""
+        },
+        "loginUrl": "https://empresa.pe.computrabajo.com/Company",
+        "processes": {
+            "asistente de contabilidad - full time": "https://empresa.pe.computrabajo.com/Company/Offers/Match?oi=917DEA8E551913ED61373E686DCF3405&cf=469814F59E4D6F04"
+        }
+    }
+}

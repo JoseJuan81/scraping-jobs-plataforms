@@ -1,3 +1,4 @@
+import json
 from helper.utils import destructure_name
 from helper.constant import CandidateFields
 
@@ -9,12 +10,14 @@ GHL_APP = "ghl"
 
 class GHLContactModel(BaseModel):
     address1: Union[str, None] = ""
-    custom_field: Union[dict, None] = {}
     email: str
     firstName: str
     lastName: str
     phone: str
     source: str = "computrabajo_scrapper"
+    tags: Union[list[str], None] = []
+    city: Union[str, None] = ""
+    customField: Union[dict, None] = {}
 
 
 def build_ghl_data(candidate: dict = {}) -> dict:
@@ -22,7 +25,7 @@ def build_ghl_data(candidate: dict = {}) -> dict:
 
     first_name, last_name = destructure_name(
         candidate[CandidateFields.NAME.value])
-    custom_fields = build_custom_fields(candidate)
+    custom_field = build_custom_fields(candidate)
 
     _data = dict([
         ("email", candidate[CandidateFields.EMAIL.value]),
@@ -30,24 +33,27 @@ def build_ghl_data(candidate: dict = {}) -> dict:
         ("lastName", last_name),
         ("phone", candidate[CandidateFields.PHONE.value]),
         ("address1", candidate[CandidateFields.CITY.value]),
-        ("customFields", custom_fields),
-        ("tags", ["Digital Disruptor", "scrapping computrabajo", "JJ81"])
+        ("customField", custom_field),
+        ("tags", candidate[CandidateFields.TAGS.value])
     ])
 
     data = GHLContactModel(**_data)
-    return data.model_dump()
+    return data.dict()
 
 
 def build_custom_fields(candidate: dict) -> dict:
     """Función para construir campos personalizado para GHL"""
 
+    # todo esto debe ir en la clase GHL
+    # asi como tambien los enums
+
     data = dict([
-        ("contact.dni", candidate[CandidateFields.DNI.value]),
-        ("contact.expectativa_salarial",
+        ("dni", candidate[CandidateFields.DNI.value]),
+        ("expectativa_salarial",
          candidate[CandidateFields.EXPECTATION.value]),
-        ("contact.resumen_personal",
+        ("resumen_personal",
          candidate[CandidateFields.PERSONAL_SUMMARY.value]),
-        ("contact.experiencia_laboral",
+        ("experiencia_laboral",
          candidate[CandidateFields.WORK_EXPERIENCE.value]),
     ])
 
