@@ -1,0 +1,22 @@
+{
+    "japisale": {
+        "company_credentials": {
+            "userEmail": "pe.dominguezjosejuan@gmail.com",
+            "password": ""
+        },
+        "loginUrl": "https://secure.indeed.com/auth?continue=https%3A%2F%2Femployers.indeed.com%2Fcandidates%2Fview%3Fid%3Da7818f403e05%26l%3DveUW%26listQuery%3Dc3RhdHVzTmFtZSUzREFjdGl2ZSUyNnNlbGVjdGVkSm9icyUzRGFYSnBPaTh2WVhCcGN5NXBibVJsWldRdVkyOXRMMFZ0Y0d4dmVXVnlTbTlpTDJVeU1ERTROREV5TFdGak16QXROREF4WlMwNFpUUmtMV0pqWTJGaU1XTTVObVJqTmclMjUzRCUyNTNEJTI2aWQlM0QxNjRkMGZkMjZlNjM%253D%26lName%3DnextPreviousCandidateList%26pos%3D11%26from%3Dgnav-util-one-host&hl=es&co=PE&userType=employer",
+        "processes": {
+            "creador de contenido": "https://employers.indeed.com/candidates?statusName=Active&selectedJobs=aXJpOi8vYXBpcy5pbmRlZWQuY29tL0VtcGxveWVySm9iL2UyMDE4NDEyLWFjMzAtNDAxZS04ZTRkLWJjY2FiMWM5NmRjNg%3D%3D&id=164d0fd26e63"
+        }
+    },
+    "casamarket": {
+        "company_credentials": {
+            "userEmail": "pe.dominguezjosejuan@gmail.com",
+            "password": ""
+        },
+        "loginUrl": "https://secure.indeed.com/auth?continue=https%3A%2F%2Femployers.indeed.com%2Fcandidates%2Fview%3Fid%3Da7818f403e05%26l%3DveUW%26listQuery%3Dc3RhdHVzTmFtZSUzREFjdGl2ZSUyNnNlbGVjdGVkSm9icyUzRGFYSnBPaTh2WVhCcGN5NXBibVJsWldRdVkyOXRMMFZ0Y0d4dmVXVnlTbTlpTDJVeU1ERTROREV5TFdGak16QXROREF4WlMwNFpUUmtMV0pqWTJGaU1XTTVObVJqTmclMjUzRCUyNTNEJTI2aWQlM0QxNjRkMGZkMjZlNjM%253D%26lName%3DnextPreviousCandidateList%26pos%3D11%26from%3Dgnav-util-one-host&hl=es&co=PE&userType=employer",
+        "processes": {
+            "creador de contenido": "https://employers.indeed.com/candidates?statusName=Active&selectedJobs=aXJpOi8vYXBpcy5pbmRlZWQuY29tL0VtcGxveWVySm9iL2UyMDE4NDEyLWFjMzAtNDAxZS04ZTRkLWJjY2FiMWM5NmRjNg%3D%3D&id=164d0fd26e63"
+        }
+    }
+}

@@ -6,7 +6,7 @@ from helper.constant import CandidateFields
 from Class.Scraping.Computrabajo.ComputrabajoScraper import ComputrabajoScraper
 
 LOGIN = "https://empresa.pe.computrabajo.com/Company"
-JOB_PAGE = "https://empresa.pe.computrabajo.com/Company/Offers/Match?oi=917DEA8E551913ED61373E686DCF3405&cf=469814F59E4D6F04"
+JOB_PAGE = "https://empresa.pe.computrabajo.com/Company/Offers/Match?oi=F9669F7CB1D08CA961373E686DCF3405&cf=469814F59E4D6F04"
 USER_EMAIL = "info@japisale.com"
 USER_PASS = "MilongoIV8"
 
@@ -54,23 +54,34 @@ def test_candidate_data(candidates_links):
     candidate_generator = com.loop_candidates()
     candidate_data_generator = com.extract_candidate_data(candidate_generator)
 
-    for candidate_data in candidate_data_generator:
-        candidate = candidate_data
-        break
+    for i, candidate_data in enumerate(candidate_data_generator):
+        if i == 0:
+            candidate = candidate_data
+            break
 
     name = CandidateFields.NAME.value
+    image = CandidateFields.IMAGE.value
     phone = CandidateFields.PHONE.value
     email = CandidateFields.EMAIL.value
     dni = CandidateFields.DNI.value
     address = CandidateFields.ADDRESS.value
     age = CandidateFields.AGE.value
+    # profile_page = CandidateFields.PROFILE_PAGE.value
+    # application_time = CandidateFields.APPLICATION_TIME.value
     experience = CandidateFields.WORK_EXPERIENCE.value
     study = CandidateFields.STUDY.value
     skills = CandidateFields.SKILL.value
+    # match = CandidateFields.MATCH.value
+    expectation = CandidateFields.EXPECTATION.value
+    summary = CandidateFields.PERSONAL_SUMMARY.value
 
     assert type(candidate[name]) == str
     assert candidate[name].lower() != "Sin Nombre".lower()
     assert len(candidate[name]) > 1
+
+    assert type(candidate[image]) == str
+    # assert candidate[image].lower() != "Sin Imagen".lower()
+    assert len(candidate[image]) > 1
 
     assert type(candidate[phone]) == str
     assert candidate[phone].lower() != "Sin Telefono".lower()
@@ -103,6 +114,16 @@ def test_candidate_data(candidates_links):
     assert type(candidate[skills]) == list
     assert len(candidate[skills]) >= 1
     assert candidate[skills][0].lower() != "Sin habilidades".lower()
+    assert type(candidate[skills]) == list
+
+    assert type(candidate[summary]) == str
+    assert candidate[summary].lower() != "Sin resumen".lower()
+    assert len(candidate[summary]) >= 1
+
+    assert type(candidate[expectation]) == str
+    assert candidate[expectation].lower() != "Sin Espectativa salarial".lower()
+    assert len(candidate[expectation]) > 1
+
 
 @pytest.fixture(scope="module")
 def scraping(job_page):

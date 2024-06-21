@@ -8,6 +8,7 @@ from Class.Scraper import Scraper
 from Class.Scraping.Computrabajo.ComputrabajoCssSelectors import ComputrabajoCssSelectors
 from Class.ExternalApi import ExternalApi
 from Class.SavingData import SavingData
+from Class.Scraping.Computrabajo.ComputrabajoPerson import ComputrabajoPersonData
 
 from helper.constant import CandidateFields
 
@@ -87,28 +88,35 @@ class ComputrabajoScraper:
             self.scraper.driver.get(candidate_url)
             # time.sleep(2)
 
-            _name = self.get_prop(css_selector=self.css_selectors.NAME, err="Sin Nombre")
-            name = _name[14:]
+            person = ComputrabajoPersonData(self.scraper, self.css_selectors)
 
-            phone = self.get_prop(self.css_selectors.PHONE, err="Sin telefono")
-            email = self.get_prop(self.css_selectors.EMAIL, err="Sin correo")
-            dni = self.get_prop(self.css_selectors.DNI, err="Sin DNI")
-            address = self.get_prop(self.css_selectors.ADDRESS, err="Sin Direccion")
-            age = self.get_prop(self.css_selectors.AGE, err="Sin Edad")
-            experience = self.get_list_of_prop(self.css_selectors.EXPERIENCE, err="Sin Experiencia")
-            study = self.get_list_of_prop(self.css_selectors.STUDY, err="Sin Estudios")
-            skills = self.get_list_of_prop(self.css_selectors.SKILLS, err="Sin Habilidades")
+            image = person.image()
+            name = person.name()
+            phone = person.phone()
+            email = person.email()
+            dni = person.dni()
+            address = person.address()
+            age = person.age()
+            summary = person.summary()
+            experience = person.experience()
+            study = person.study()
+            skills = person.skills()
+            expectation = person.expectation()
 
             candidate = dict([
+                (CandidateFields.IMAGE.value, image),
                 (CandidateFields.NAME.value, name),
                 (CandidateFields.PHONE.value, phone),
                 (CandidateFields.EMAIL.value, email),
                 (CandidateFields.DNI.value, dni),
                 (CandidateFields.ADDRESS.value, address),
                 (CandidateFields.AGE.value, age),
+                (CandidateFields.PERSONAL_SUMMARY.value, summary),
                 (CandidateFields.WORK_EXPERIENCE.value, experience),
                 (CandidateFields.STUDY.value, study),
                 (CandidateFields.SKILL.value, skills),
+                (CandidateFields.EXPECTATION.value, expectation),
+                (CandidateFields.PROFILE_PAGE.value,  self.scraper.driver.current_url),
                 (CandidateFields.PLATAFORM.value,  self.job_plataform)
             ])
 
@@ -150,3 +158,10 @@ class ComputrabajoScraper:
             candidates=self.candidates,
             file_name=f'{self.job_plataform}_{job_position_name}'
         )
+
+    def end(self, job_position_name:str="") -> None:
+        """
+        Funcion para terminar el scraping
+        """
+
+        print(f"{self.job_plataform}: Scraping Finalizado para '{job_position_name}'")

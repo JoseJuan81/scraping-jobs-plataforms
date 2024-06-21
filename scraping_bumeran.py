@@ -18,5 +18,5 @@ if __name__ == "__main__":
 
     bum.job_post(terminal_input.job_url)
     bum.start_scraping()
-    bum.API.send(url="")
-    # bum.end()
+    bum.save_css_file(job_position_name=terminal_input.process_name)
+    bum.end(job_position_name=terminal_input.process_name)
